@@ -1,0 +1,23 @@
+RQF-01	El sistema permitirá el acceso seguro mediante correo electrónico y contraseña, validando las credenciales y determinando el rol del usuario (Admin, Médico, Paciente).
+RQF-02	El sistema ofrecerá un formulario público simplificado para que nuevos pacientes creen su cuenta ingresando sus datos básicos.
+RQF-03	El usuario podrá visualizar y actualizar su información personal (nombre, teléfono, edad) y configurar sus preferencias de notificaciones.
+RQF-04	El administrador podrá crear, listar, editar y eliminar las especialidades médicas que ofrece la clínica.
+RQF-05	El administrador podrá registrar nuevos médicos, asignarles especialidades, editar sus datos o inhabilitar su acceso al sistema.
+RQF-06	El administrador tendrá acceso a un calendario interactivo para visualizar y administrar la disponibilidad de cualquier médico.
+RQF-07	El sistema mostrará un listado auditable de todas las transacciones financieras simuladas, detallando referencia, paciente, monto y fecha.
+RQF-08	El administrador podrá filtrar el listado general de citas por rango de fechas, estado, médico o paciente, con contadores estadísticos.
+RQF-09	El sistema presentará un dashboard con indicadores visuales sobre la distribución de citas por especialidad y tendencias de atenciones.
+RQF-10	El sistema permitirá descargar los reportes de citas en formato CSV (para Excel) y generar informes ejecutivos en PDF.
+RQF-11	El médico podrá publicar bloques de horarios disponibles para que sean visibles y reservables por los pacientes.
+RQF-12	El médico visualizará sus citas programadas, con la capacidad de filtrar las del día actual y ver el motivo de consulta.
+RQF-13	El sistema permitirá al médico consultar el historial clínico completo de un paciente (citas pasadas, diagnósticos) mediante una ventana modal.
+RQF-14	El médico podrá finalizar una cita registrando el diagnóstico clínico y las notas de observación correspondientes.
+RQF-15	Al completar la cita, el sistema generará automáticamente una receta en PDF con el detalle de medicamentos, almacenándola en la nube.
+RQF-16	El médico podrá marcar una cita como "No se presentó" (Ausencia) para liberar su gestión y registrar la inasistencia.
+RQF-17	El sistema guiará al paciente mediante un flujo paso a paso: Selección de Especialidad -> Médico -> Horario -> Motivo -> Pago.
+RQF-18	El sistema integrará una vista de simulación de pasarela de pagos para procesar la confirmación de la cita sin requerir transacciones reales.
+RQF-19	El paciente podrá visualizar sus citas futuras, filtrar por fecha específica y ver el estado de cada una.
+RQF-20	El sistema permitirá al paciente cambiar el horario de una cita reservada por otro disponible del mismo médico.
+RQF-21	El paciente podrá cancelar una cita reservada, actualizando su estado y liberando el horario para otros usuarios.
+RQF-22	El paciente tendrá acceso a su historial de citas pasadas, podrá ver el diagnóstico y descargar el archivo PDF de su receta médica.
+RQF-23	El sistema enviará automáticamente un correo electrónico de confirmación con los detalles de la cita tras una reserva exitosa.

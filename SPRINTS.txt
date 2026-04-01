@@ -1,0 +1,39 @@
+Sprint 1 (Semanas 1-2): Bases y Seguridad (Autenticación)
+
+Configuración de repositorios y entornos.
+
+RQF-01 y RQF-02: Registro y Login (Frontend y Backend).
+
+Conexión base de datos (Firebase Firestore) e integración de Firebase Auth.
+
+Sprint 2 (Semanas 3-4): Perfiles y Mantenimiento (CRUDs base)
+
+RQF-03: Perfiles de usuario.
+
+RQF-04 y RQF-05: El Administrador gestiona Especialidades y Médicos.
+
+RQF-06: Vistas iniciales de los calendarios.
+
+Sprint 3 (Semanas 5-6): El Motor del Sistema (Agenda y Atención)
+
+RQF-11: Médicos publican sus horarios.
+
+RQF-12 y RQF-14: Panel de atención médica y registro de diagnósticos.
+
+RQF-13: Consulta de historial clínico.
+
+Sprint 4 (Semanas 7-8): Experiencia del Paciente y Nube
+
+RQF-17: Flujo del paciente para reservar cita.
+
+RQF-18 y RQF-20: Simulación de pago y reprogramación/cancelación.
+
+RQF-15 y RQF-24: Generación de la receta en PDF (Cloud Storage) y envío de correos.
+
+Sprint 5 (Semanas 9-10): Dashboards, Reportes y Cierre
+
+RQF-08, RQF-09 y RQF-10: Buscador de citas, gráficas para el Admin y exportación a CSV.
+
+Pruebas integrales de todo el flujo.
+
+Despliegue final en la nube (ej. Vercel para frontend, Render/Railway para backend).

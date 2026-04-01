@@ -1,0 +1,13 @@
+Regla de Negocio 01 (Roles y Privilegios): El sistema debe operar bajo un esquema estricto de tres roles (Administrador, Médico, Paciente), donde cada usuario tiene acceso exclusivo a las funcionalidades correspondientes a su perfil, validado mediante tokens de seguridad en cada petición.
+
+Regla de Negocio 02 (Registro de Usuarios): El registro público a través del portal web está restringido exclusivamente a Pacientes. Las cuentas para el personal médico y administrativo solo pueden ser creadas internamente por un Administrador autenticado.
+
+Regla de Negocio 03 (Reserva y Pago): Para que una cita se considere "Reservada" y bloquee el horario del médico, el paciente debe completar satisfactoriamente la simulación del flujo de pago. Las reservas iniciadas, pero no confirmadas en la pasarela simulada, no afectan la disponibilidad de la agenda.
+
+Regla de Negocio 04 (Integridad de Agenda): Un bloque de horario específico solo puede ser asignado a una única cita activa. El sistema debe emplear transacciones atómicas en la base de datos para prevenir la duplicidad de reservas en situaciones de concurrencia.
+
+Regla de Negocio 05 (Política de Reprogramación): La reprogramación permite al paciente cambiar el horario de una cita "Reservada" por otro bloque disponible del mismo médico sin costo adicional. Este proceso libera el horario original inmediatamente.
+
+Regla de Negocio 06 (Inmutabilidad de la Receta): Una vez que el médico finaliza la atención y genera la receta electrónica, el documento PDF resultante se almacena en la nube de forma definitiva y no puede ser modificado, garantizando la integridad del historial clínico.
+
+Regla de Negocio 07 (Privacidad del Paciente): Los pacientes tienen derecho a visualizar el historial de sus atenciones pasadas, ver el diagnóstico general y descargar sus recetas, pero no tendrán acceso a las notas clínicas internas reservadas para el personal médico.
