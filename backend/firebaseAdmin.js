@@ -1,8 +1,11 @@
 const admin = require('firebase-admin');
-// const serviceAccount = require('./serviceAccountKey.json'); // Descomentar cuando se tenga la key
 
-// admin.initializeApp({
-//   credential: admin.credential.cert(serviceAccount)
-// });
+// Importamos la llave privada "serviceAccountKey.json"
+const serviceAccount = require('./serviceAccountKey.json');
 
-// module.exports = admin;
+// Inicializamos la aplicación de administrador
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount)
+});
+
+module.exports = admin;
