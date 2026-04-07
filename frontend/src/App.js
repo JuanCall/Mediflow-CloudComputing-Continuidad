@@ -11,6 +11,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 
 // Vistas Protegidas (Dashboards)
 import DashboardAdmin from './components/administrador/DashboardAdmin';
+import GestionEspecialidades from './components/administrador/GestionEspecialidades';
 import DashboardMedico from './components/medico/DashboardMedico';
 import DashboardPaciente from './components/paciente/DashboardPaciente';
 
@@ -50,6 +51,14 @@ function App() {
             element={
               <ProtectedRoute allowedRoles={['Admin']}>
                 <DashboardAdmin />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/dashboard-admin/especialidades" 
+            element={
+              <ProtectedRoute allowedRoles={['Admin']}>
+                <GestionEspecialidades />
               </ProtectedRoute>
             } 
           />
