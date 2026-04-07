@@ -11,9 +11,11 @@ app.use(express.json());
 
 // Importación de rutas
 const authRoutes = require('./routes/authRoutes');
+const adminRoutes = require('./routes/adminRoutes');
 
 // Uso de rutas
 app.use('/api/auth', authRoutes);
+app.use('/api/admin', adminRoutes);
 
 // Ruta de prueba
 app.get('/', (req, res) => {
