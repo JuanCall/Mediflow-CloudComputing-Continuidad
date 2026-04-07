@@ -12,7 +12,10 @@ import ProtectedRoute from './components/ProtectedRoute';
 // Vistas Protegidas (Dashboards)
 import DashboardAdmin from './components/administrador/DashboardAdmin';
 import GestionEspecialidades from './components/administrador/GestionEspecialidades';
+import GestionMedicos from './components/administrador/GestionMedicos';
+
 import DashboardMedico from './components/medico/DashboardMedico';
+
 import DashboardPaciente from './components/paciente/DashboardPaciente';
 
 // Controlador de Tráfico: Decide a dónde va el usuario después de loguearse
@@ -59,6 +62,14 @@ function App() {
             element={
               <ProtectedRoute allowedRoles={['Admin']}>
                 <GestionEspecialidades />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/dashboard-admin/medicos" 
+            element={
+              <ProtectedRoute allowedRoles={['Admin']}>
+                <GestionMedicos />
               </ProtectedRoute>
             } 
           />

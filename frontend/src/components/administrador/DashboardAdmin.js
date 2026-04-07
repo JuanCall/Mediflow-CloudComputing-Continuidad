@@ -18,11 +18,12 @@ const DashboardAdmin = () => {
           </div>
         </Link>
         
-        {/* Este lo conectaremos en el siguiente Issue */}
-        <div style={{ flex: 1, background: '#f4f7f6', padding: '20px', borderRadius: '10px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', textAlign: 'center', color: '#95a5a6', cursor: 'not-allowed' }}>
+        <Link to="/dashboard-admin/medicos" style={{ flex: 1, textDecoration: 'none' }}>
+          <div style={{ background: 'white', padding: '20px', borderRadius: '10px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', textAlign: 'center', color: '#2c3e50' }}>
             <h2>👨‍⚕️ Médicos</h2>
-            <p>En desarrollo...</p>
-        </div>
+            <p>Gestionar plantilla médica</p>
+          </div>
+        </Link>
       </div>
 
       <button onClick={logout} className="btn-primary" style={{width: '200px'}}>Cerrar Sesión</button>
