@@ -1,46 +1,46 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import './Auth.css';
+import '../Auth.css'; // Importaremos los estilos desde aquí
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleLogin = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Iniciando sesión en Mediflow con:", email);
+    // Aquí luego conectaremos con Firebase
+    console.log("Datos de login:", { email, password });
   };
 
   return (
     <div className="auth-container">
-      <div className="auth-card">
-        <h2>Mediflow</h2>
-        <p>Bienvenido al portal médico</p>
-        <form onSubmit={handleLogin}>
+      <div className="auth-box">
+        <h2>Iniciar Sesión en Mediflow</h2>
+        <form onSubmit={handleSubmit}>
           <div className="input-group">
             <label>Correo Electrónico</label>
             <input 
               type="email" 
-              placeholder="correo@ejemplo.com" 
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required 
+              placeholder="tu@correo.com"
             />
           </div>
           <div className="input-group">
             <label>Contraseña</label>
             <input 
               type="password" 
-              placeholder="••••••••" 
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required 
+              placeholder="••••••••"
             />
           </div>
-          <button type="submit" className="btn-auth">Ingresar</button>
+          <button type="submit" className="btn-primary">Ingresar</button>
         </form>
-        <p className="switch-auth">
-          ¿Eres nuevo? <Link to="/register">Crea una cuenta</Link>
+        <p className="auth-footer">
+          ¿No tienes una cuenta como paciente? <Link to="/registro">Regístrate aquí</Link>
         </p>
       </div>
     </div>
