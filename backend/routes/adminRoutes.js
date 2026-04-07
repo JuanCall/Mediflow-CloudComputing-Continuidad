@@ -114,4 +114,80 @@ router.delete('/especialidades/:id', async (req, res) => {
     }
 });
 
+// --------------------------------------------------------
+// CRUD DE MÉDICOS
+// --------------------------------------------------------
+
+// 1. OBTENER todos los médicos (GET)
+router.get('/medicos', async (req, res) => {
+    try {
+        // Buscamos en la colección usuarios SOLO a los que tienen el rol de 'Médico'
+        const snapshot = await db.collection('usuarios').where('rol', '==', 'Médico').get();
+        const medicos = snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+        }));
+
+        res.status(200).json(medicos);
+    } catch (error) {
+        res.status(500).json({ error: 'Error al obtener los médicos' });
+    }
+});
+
+// 2. REGISTRAR un nuevo médico (POST)
+router.post('/medicos', async (req, res) => {
+    const { nombreCompleto, email, password, especialidadId, especialidadNombre, telefono } = req.body;
+
+    if (!email || !password || !nombreCompleto || !especialidadId) {
+        return res.status(400).json({ error: 'Faltan campos obligatorios' });
+    }
+
+    try {
+        // A. Crear la cuenta en el sistema de Autenticación de Firebase
+        const userRecord = await admin.auth().createUser({
+            email: email,
+            password: password,
+            displayName: nombreCompleto,
+        });
+
+        // B. Guardar su perfil en Firestore con su especialidad
+        await db.collection('usuarios').doc(userRecord.uid).set({
+            nombreCompleto: nombreCompleto,
+            email: email,
+            telefono: telefono || '',
+            rol: 'Médico',
+            especialidadId: especialidadId,
+            especialidadNombre: especialidadNombre,
+            fechaCreacion: admin.firestore.FieldValue.serverTimestamp()
+        });
+
+        res.status(201).json({ 
+            message: 'Médico registrado exitosamente', 
+            uid: userRecord.uid 
+        });
+
+    } catch (error) {
+        console.error('Error al registrar médico:', error);
+        res.status(400).json({ error: error.message });
+    }
+});
+
+// 3. ELIMINAR un médico (DELETE)
+router.delete('/medicos/:uid', async (req, res) => {
+    const { uid } = req.params;
+
+    try {
+        // Primero lo borramos de Authentication para que no pueda loguearse
+        await admin.auth().deleteUser(uid);
+        
+        // Luego borramos su documento de perfil en Firestore
+        await db.collection('usuarios').doc(uid).delete();
+
+        res.status(200).json({ message: 'Médico eliminado correctamente' });
+    } catch (error) {
+        console.error('Error al eliminar médico:', error);
+        res.status(500).json({ error: 'Error al eliminar al médico' });
+    }
+});
+
 module.exports = router;
