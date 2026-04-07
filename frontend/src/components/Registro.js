@@ -1,24 +1,45 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import '../Auth.css';
 
 const Registro = () => {
   const [formData, setFormData] = useState({
-    nombreCompleto: '',
-    email: '',
-    password: '',
-    telefono: '',
-    edad: ''
+    nombreCompleto: '', email: '', password: '', telefono: '', edad: ''
   });
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
+  const { login } = useAuth(); // Traemos la función de login del contexto
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Aquí luego conectaremos con Firebase Auth y crearemos el documento en Firestore
-    console.log("Datos de registro del paciente:", formData);
+    setError('');
+    
+    try {
+      // 1. Enviamos los datos a nuestro backend para que cree al Paciente
+      const response = await fetch('http://localhost:5000/api/auth/registro', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) throw new Error(data.error || 'Error al registrar');
+
+      // 2. Si el backend lo creó con éxito, iniciamos sesión en el frontend
+      await login(formData.email, formData.password);
+
+      // 3. Redirigimos al usuario
+      navigate('/dashboard');
+
+    } catch (err) {
+      setError(err.message);
+    }
   };
 
   return (

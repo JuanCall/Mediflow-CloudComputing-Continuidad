@@ -1,15 +1,25 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import '../Auth.css'; // Importaremos los estilos desde aquí
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import '../Auth.css';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
+  const { login } = useAuth();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Aquí luego conectaremos con Firebase
-    console.log("Datos de login:", { email, password });
+    setError('');
+    try {
+      // Firebase comprueba el correo y contraseña
+      await login(email, password);
+      navigate('/dashboard');
+    } catch (err) {
+      setError('Fallo al iniciar sesión. Verifica tus credenciales.');
+    }
   };
 
   return (
