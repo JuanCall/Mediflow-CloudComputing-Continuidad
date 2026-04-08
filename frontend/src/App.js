@@ -2,6 +2,9 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
 
+// --- IMPORTANTE: AGREGAR ESTA LÍNEA PARA EL DISEÑO ---
+import 'bootstrap/dist/css/bootstrap.min.css'; 
+
 // Vistas Públicas
 import Login from './components/Login';
 import Registro from './components/Registro';
@@ -13,25 +16,29 @@ import ProtectedRoute from './components/ProtectedRoute';
 import DashboardAdmin from './components/administrador/DashboardAdmin';
 import GestionEspecialidades from './components/administrador/GestionEspecialidades';
 import GestionMedicos from './components/administrador/GestionMedicos';
-
 import DashboardMedico from './components/medico/DashboardMedico';
-
 import DashboardPaciente from './components/paciente/DashboardPaciente';
 
 // Controlador de Tráfico: Decide a dónde va el usuario después de loguearse
 const TrafficController = () => {
-  const { userRole } = useAuth();
+  const { userRole, loading } = useAuth(); // Agregamos loading si tu context lo tiene
+
+  if (loading) return <div className="text-center mt-5">Verificando rol...</div>;
+
   if (userRole === 'Admin') return <Navigate to="/dashboard-admin" replace />;
   if (userRole === 'Médico') return <Navigate to="/dashboard-medico" replace />;
   if (userRole === 'Paciente') return <Navigate to="/dashboard-paciente" replace />;
   
-  return <div>Cargando destino...</div>;
+  return <div className="text-center mt-5">Cargando destino...</div>;
 };
 
 function App() {
   return (
     <Router>
-      <div className="App">
+      {/* Añadimos la clase 'bg-light' y 'min-vh-100' para que el fondo 
+          se vea gris claro profesional como en los paneles que me mostraste 
+      */}
+      <div className="App bg-light min-vh-100">
         <Routes>
           {/* Rutas Públicas */}
           <Route path="/" element={<Navigate to="/login" />} />
@@ -89,6 +96,9 @@ function App() {
               </ProtectedRoute>
             } 
           />
+
+          {/* Ruta para manejar errores 404 */}
+          <Route path="*" element={<Navigate to="/login" />} />
         </Routes>
       </div>
     </Router>
