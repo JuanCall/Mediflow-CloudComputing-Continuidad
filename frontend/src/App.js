@@ -18,6 +18,7 @@ import GestionEspecialidades from './components/administrador/GestionEspecialida
 import GestionMedicos from './components/administrador/GestionMedicos';
 import DashboardMedico from './components/medico/DashboardMedico';
 import DashboardPaciente from './components/paciente/DashboardPaciente';
+import MisCitas from './components/paciente/MisCitas';
 
 // Controlador de Tráfico: Decide a dónde va el usuario después de loguearse
 const TrafficController = () => {
@@ -96,9 +97,14 @@ function App() {
               </ProtectedRoute>
             } 
           />
-
-          {/* Ruta para manejar errores 404 */}
-          <Route path="*" element={<Navigate to="/login" />} />
+          <Route 
+            path="/dashboard-paciente/mis-citas" 
+            element={
+              <ProtectedRoute allowedRoles={['Paciente']}>
+                <MisCitas />
+              </ProtectedRoute>
+            } 
+          />
         </Routes>
       </div>
     </Router>
