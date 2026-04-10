@@ -1,21 +1,54 @@
 const express = require('express');
 const router = express.Router();
+const admin = require('../firebaseAdmin');
+const verificarToken = require('../middleware/authMiddleware');
+const db = admin.firestore();
 
-// Cambiamos a 'let' para poder agregar elementos al array
-let misCitas = [
-  { id: 1, fecha: "2026-04-10", hora: "10:30 AM", medico: "Dr. García", especialidad: "Cardiología", estado: "Pendiente" }
-];
+router.use(verificarToken);
 
-// GET: Enviar las citas al frontend
-router.get('/paciente', (req, res) => {
-    res.json(misCitas);
+// El paciente crea la cita en Firestore
+router.post('/paciente', async (req, res) => {
+    try {
+        const cita = { ...req.body, pacienteId: req.user.uid };
+        await db.collection('citas').add(cita);
+        res.status(201).json({ message: "Creada" });
+    } catch (e) { res.status(500).send(e); }
 });
 
-// POST: Recibir nueva cita del frontend y guardarla
-router.post('/paciente', (req, res) => {
-    const nueva = { id: misCitas.length + 1, ...req.body, estado: 'Pendiente' };
-    misCitas.push(nueva);
-    res.status(201).json(nueva);
+// El paciente ve sus citas desde Firestore
+router.get('/paciente', async (req, res) => {
+    try {
+        const snapshot = await db.collection('citas').where('pacienteId', '==', req.user.uid).get();
+        const citas = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        res.json(citas);
+    } catch (e) { res.status(500).send(e); }
+});
+
+// El médico ve sus citas desde Firestore
+router.get('/medico', verificarToken, async (req, res) => {
+    try {
+        const medicoId = req.user.uid; // Este es el ID del médico que inició sesión
+        console.log("Buscando citas para el médico ID:", medicoId); // Esto saldrá en tu terminal negra
+
+        const snapshot = await db.collection('citas')
+            .where('medicoId', '==', medicoId)
+            .get();
+
+        if (snapshot.empty) {
+            console.log("No se encontraron citas en Firebase.");
+            return res.status(200).json([]);
+        }
+
+        const citas = snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+        }));
+
+        res.status(200).json(citas);
+    } catch (error) {
+        console.error("Error en el servidor:", error);
+        res.status(500).json({ error: 'Error al obtener las citas del médico' });
+    }
 });
 
 module.exports = router;
