@@ -21,6 +21,7 @@ import PanelAtencion from './components/medico/PanelAtencion';
 
 import DashboardPaciente from './components/paciente/DashboardPaciente';
 import MisCitas from './components/paciente/MisCitas';
+import ReservarCita from './components/paciente/ReservarCita';
 
 // Controlador de Tráfico: Decide a dónde va el usuario después de loguearse
 const TrafficController = () => {
@@ -112,6 +113,14 @@ function App() {
             element={
               <ProtectedRoute allowedRoles={['Paciente']}>
                 <MisCitas />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/dashboard-paciente/reservar" 
+            element={
+              <ProtectedRoute allowedRoles={['Paciente']}>
+                <ReservarCita />
               </ProtectedRoute>
             } 
           />

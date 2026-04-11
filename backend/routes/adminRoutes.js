@@ -7,6 +7,12 @@ const db = admin.firestore();
 
 // Middleware local para verificar que el usuario sea Administrador
 const verificarAdmin = async (req, res, next) => {
+    // NUEVA REGLA: Si la petición es solo para LEER (GET), dejamos pasar a cualquier usuario autenticado
+    if (req.method === 'GET') {
+        return next();
+    }
+
+    // Para operaciones críticas (POST, PUT, DELETE), exigimos ser Admin
     try {
         const uid = req.user.uid;
         const userDoc = await db.collection('usuarios').doc(uid).get();
