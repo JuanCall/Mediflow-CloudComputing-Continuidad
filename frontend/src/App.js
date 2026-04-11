@@ -2,7 +2,6 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
 
-// --- IMPORTANTE: AGREGAR ESTA LÍNEA PARA EL DISEÑO ---
 import 'bootstrap/dist/css/bootstrap.min.css'; 
 
 // Vistas Públicas
@@ -16,7 +15,10 @@ import ProtectedRoute from './components/ProtectedRoute';
 import DashboardAdmin from './components/administrador/DashboardAdmin';
 import GestionEspecialidades from './components/administrador/GestionEspecialidades';
 import GestionMedicos from './components/administrador/GestionMedicos';
+
 import DashboardMedico from './components/medico/DashboardMedico';
+import PanelAtencion from './components/medico/PanelAtencion';
+
 import DashboardPaciente from './components/paciente/DashboardPaciente';
 import MisCitas from './components/paciente/MisCitas';
 
@@ -86,6 +88,14 @@ function App() {
             element={
               <ProtectedRoute allowedRoles={['Médico']}>
                 <DashboardMedico />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/dashboard-medico/agenda" 
+            element={
+              <ProtectedRoute allowedRoles={['Médico']}>
+                <PanelAtencion />
               </ProtectedRoute>
             } 
           />

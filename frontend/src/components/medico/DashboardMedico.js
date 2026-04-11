@@ -1,24 +1,25 @@
 import React from 'react';
 import { useAuth } from '../../context/AuthContext';
-import PanelAtencion from './PanelAtencion';
+import { Link } from 'react-router-dom';
 
 const DashboardMedico = () => {
-  const { logout } = useAuth();
-
+  const { logout, currentUser } = useAuth();
+  
   return (
-    <div className="container mt-4">
-      <div className="d-flex justify-content-between align-items-center mb-4 p-3 bg-white shadow-sm rounded">
-        <h1 className="h3 mb-0">Mi Agenda Médica 🩺</h1>
-        <button onClick={logout} className="btn btn-outline-danger">
-          Cerrar Sesión
-        </button>
-      </div>
+    <div style={{ padding: '40px', maxWidth: '800px', margin: '0 auto' }}>
+      <h1>Portal del Médico 👨‍⚕️</h1>
+      <p>Bienvenido. ¿Qué deseas gestionar hoy?</p>
       
-      <div className="row">
-        <div className="col-12">
-            <PanelAtencion />
-        </div>
+      <div style={{ display: 'flex', gap: '20px', marginTop: '30px', marginBottom: '30px' }}>
+        <Link to="/dashboard-medico/agenda" style={{ flex: 1, textDecoration: 'none' }}>
+          <div style={{ background: 'white', padding: '20px', borderRadius: '10px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', textAlign: 'center', color: '#2c3e50' }}>
+            <h2>📋 Mi Agenda</h2>
+            <p>Ver pacientes y atender citas</p>
+          </div>
+        </Link>
       </div>
+
+      <button onClick={logout} className="btn-primary" style={{width: '200px'}}>Cerrar Sesión</button>
     </div>
   );
 };
