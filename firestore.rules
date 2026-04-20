@@ -1,0 +1,62 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ---------------------------------------------------------
+    // FUNCIONES DE AYUDA (Helpers)
+    // ---------------------------------------------------------
+    
+    // Verifica si el usuario inició sesión
+    function isAuth() {
+      return request.auth != null;
+    }
+
+    // Busca en la colección 'usuarios' para ver si el rol es 'Admin'
+    function isAdmin() {
+      return isAuth() && get(/databases/$(database)/documents/usuarios/$(request.auth.uid)).data.rol == 'Admin';
+    }
+
+    // ---------------------------------------------------------
+    // REGLAS POR COLECCIÓN
+    // ---------------------------------------------------------
+
+    // 1. Colección: USUARIOS (Perfiles)
+    match /usuarios/{userId} {
+      // Un usuario solo puede leer su propio perfil. El Admin puede leer/escribir todos.
+      allow read: if isAuth() && (request.auth.uid == userId || isAdmin());
+      allow write: if isAdmin();
+    }
+
+    // 2. Colección: ESPECIALIDADES
+    match /especialidades/{especialidadId} {
+      // Cualquier usuario logueado puede leerlas (para llenar los combos de selección)
+      allow read: if isAuth();
+      // Solo los Administradores pueden modificarlas
+      allow write: if isAdmin();
+    }
+
+    // 3. Colección: CITAS
+    match /citas/{citaId} {
+      // LEER: Solo puedes leer la cita si eres el paciente que la agendó, 
+      // el médico asignado a ella, o un Administrador.
+      allow read: if isAuth() && (
+        resource.data.pacienteId == request.auth.uid || 
+        resource.data.medicoId == request.auth.uid || 
+        isAdmin()
+      );
+
+      // CREAR: Solo se permite crear si el pacienteId de la nueva cita 
+      // coincide con el UID de quien la está enviando.
+      allow create: if isAuth() && request.resource.data.pacienteId == request.auth.uid;
+
+      // ACTUALIZAR: Solo el médico asignado puede modificarla (para cambiar a "Atendida") o el Admin.
+      allow update: if isAuth() && (
+        resource.data.medicoId == request.auth.uid || 
+        isAdmin()
+      );
+
+      // ELIMINAR: Por seguridad, solo el Admin puede borrar citas del registro histórico.
+      allow delete: if isAdmin();
+    }
+  }
+}
