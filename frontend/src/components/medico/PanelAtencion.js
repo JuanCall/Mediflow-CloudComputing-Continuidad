@@ -54,7 +54,7 @@ const PanelAtencion = () => {
 
         // Hacemos la petición directamente a los servidores de Cloudinary
         const cloudRes = await axios.post(
-          `https://api.cloudinary.com/v1_1/dgnuvrcqr/auto/upload`,
+          `https://api.cloudinary.com/v1_1/dgnuvrcqr/autoupload`,
           formData
         );
         
