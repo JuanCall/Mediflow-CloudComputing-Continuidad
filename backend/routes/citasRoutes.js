@@ -88,10 +88,10 @@ router.get('/medico', async (req, res) => {
     }
 });
 
-// 4. ACTUALIZAR el estado de una cita (y adjuntar receta) (PUT)
+// ACTUALIZAR el estado de una cita (y adjuntar receta) (PUT)
 router.put('/:id/estado', async (req, res) => {
     const { id } = req.params;
-    const { estado, recetaUrl } = req.body; // <-- Ahora recibimos recetaUrl
+    const { estado, recetaUrl } = req.body;
 
     if (!estado) {
         return res.status(400).json({ error: 'Debes enviar un nuevo estado válido.' });
@@ -105,21 +105,37 @@ router.put('/:id/estado', async (req, res) => {
             return res.status(404).json({ error: 'Cita no encontrada.' });
         }
 
-        // Preparamos los datos a actualizar
+        const datosCitaAntigua = doc.data(); // Guardamos los datos antes de cambiarlos
+
+        // 1. Actualizamos la cita principal
         const updateData = { 
             estado: estado,
             fechaActualizacion: admin.firestore.FieldValue.serverTimestamp()
         };
 
-        // Si el médico envió un archivo, lo agregamos a la base de datos
         if (recetaUrl) {
             updateData.recetaUrl = recetaUrl;
         }
 
         await citaRef.update(updateData);
 
-        res.status(200).json({ message: `Cita actualizada a estado: ${estado}` });
+        // --- LOG DE AUDITORÍA CLÍNICO ---
+        // Creamos un registro inmutable de esta acción
+        await db.collection('auditoria').add({
+            accion: 'CAMBIO_ESTADO_CITA',
+            entidadId: id, // El ID de la cita que se modificó
+            estadoAnterior: datosCitaAntigua.estado,
+            estadoNuevo: estado,
+            recetaAdjuntada: recetaUrl ? true : false,
+            usuarioId: req.user ? req.user.uid : 'Médico/Sistema', 
+            fechaHora: admin.firestore.FieldValue.serverTimestamp(),
+            ip: req.ip // Registramos desde qué IP se hizo el cambio
+        });
+        // ---------------------------------------
+
+        res.status(200).json({ message: `Cita actualizada a estado: ${estado} y auditada correctamente.` });
     } catch (error) {
+        console.error("Error al actualizar y auditar:", error);
         res.status(500).json({ error: 'Error al actualizar el estado de la cita' });
     }
 });
