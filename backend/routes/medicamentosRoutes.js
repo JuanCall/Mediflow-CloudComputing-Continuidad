@@ -96,4 +96,65 @@ router.delete('/:id', async (req, res) => {
     }
 });
 
+// 5. DESPACHAR medicamentos (Descontar stock de forma segura) (POST)
+router.post('/despachar', async (req, res) => {
+    const { medicamentosEntregados, pacienteId, citaId } = req.body;
+    // medicamentosEntregados debe ser: [{ id: '123', cantidad: 2, nombre: 'Paracetamol' }]
+
+    if (!medicamentosEntregados || medicamentosEntregados.length === 0) {
+        return res.status(400).json({ error: 'Debe enviar al menos un medicamento para despachar.' });
+    }
+
+    try {
+        // Iniciamos la TRANSACCIÓN (Todo o Nada)
+        await db.runTransaction(async (transaction) => {
+            const validacionesStock = [];
+
+            // 1. Verificar Stock de todos los medicamentos antes de descontar
+            for (const item of medicamentosEntregados) {
+                const medRef = db.collection('medicamentos').doc(item.id);
+                const medDoc = await transaction.get(medRef);
+
+                if (!medDoc.exists) throw new Error(`MEDICAMENTO_NO_ENCONTRADO_${item.nombre}`);
+
+                const stockActual = medDoc.data().stockActual;
+                if (stockActual < item.cantidad) throw new Error(`STOCK_INSUFICIENTE_${item.nombre}`);
+
+                // Guardamos la referencia y el nuevo cálculo
+                validacionesStock.push({ ref: medRef, nuevoStock: stockActual - item.cantidad });
+            }
+
+            // 2. Si todo el stock es válido, aplicamos los descuentos
+            for (const operacion of validacionesStock) {
+                transaction.update(operacion.ref, { 
+                    stockActual: operacion.nuevoStock,
+                    fechaActualizacion: admin.firestore.FieldValue.serverTimestamp()
+                });
+            }
+
+            // 3. Log de Auditoría (Recibo de Farmacia)
+            const auditoriaRef = db.collection('auditoria').doc();
+            transaction.set(auditoriaRef, {
+                accion: 'DESPACHO_FARMACIA',
+                citaReferencia: citaId || 'Venta Libre',
+                pacienteId: pacienteId || 'No especificado',
+                medicinasEntregadas: medicamentosEntregados,
+                usuarioId: req.user ? req.user.uid : 'Farmacia/Sistema',
+                fechaHora: admin.firestore.FieldValue.serverTimestamp(),
+                ip: req.ip
+            });
+        });
+
+        res.status(200).json({ message: 'Medicamentos despachados y stock actualizado exitosamente.' });
+
+    } catch (error) {
+        console.error("Error en despacho de farmacia:", error.message);
+        if (error.message.includes('STOCK_INSUFICIENTE')) {
+            const nombreMed = error.message.split('_')[2];
+            return res.status(400).json({ error: `No hay stock suficiente de ${nombreMed}` });
+        }
+        res.status(500).json({ error: 'Error interno al procesar el despacho.' });
+    }
+});
+
 module.exports = router;

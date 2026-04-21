@@ -88,94 +88,42 @@ router.get('/medico', async (req, res) => {
     }
 });
 
-// ACTUALIZAR el estado de una cita, subir receta y DESCONTAR STOCK (PUT)
+// ACTUALIZAR el estado de una cita y adjuntar receta (PUT)
 router.put('/:id/estado', async (req, res) => {
     const { id } = req.params;
-    const { estado, recetaUrl, medicamentosEntregados } = req.body;
-    // medicamentosEntregados debe ser un array: [{ id: '123', cantidad: 2, nombre: 'Paracetamol' }]
+    const { estado, recetaUrl } = req.body;
 
-    if (!estado) {
-        return res.status(400).json({ error: 'Debes enviar un nuevo estado válido.' });
-    }
+    if (!estado) return res.status(400).json({ error: 'Debes enviar un nuevo estado válido.' });
 
     try {
-        // Iniciamos una TRANSACCIÓN en Firestore (Todo o Nada)
-        await db.runTransaction(async (transaction) => {
-            const citaRef = db.collection('citas').doc(id);
-            const citaDoc = await transaction.get(citaRef);
+        const citaRef = db.collection('citas').doc(id);
+        const doc = await citaRef.get();
+        if (!doc.exists) return res.status(404).json({ error: 'Cita no encontrada.' });
 
-            if (!citaDoc.exists) {
-                throw new Error('CITA_NO_ENCONTRADA');
-            }
+        const datosCitaAntigua = doc.data();
 
-            // 1. Verificar Stock de todos los medicamentos antes de descontar
-            const validacionesStock = [];
-            if (medicamentosEntregados && medicamentosEntregados.length > 0) {
-                for (const item of medicamentosEntregados) {
-                    const medRef = db.collection('medicamentos').doc(item.id);
-                    const medDoc = await transaction.get(medRef);
+        // Actualizamos la cita principal
+        const updateData = { estado, fechaActualizacion: admin.firestore.FieldValue.serverTimestamp() };
+        if (recetaUrl) updateData.recetaUrl = recetaUrl;
 
-                    if (!medDoc.exists) {
-                        throw new Error(`MEDICAMENTO_NO_ENCONTRADO_${item.nombre}`);
-                    }
+        await citaRef.update(updateData);
 
-                    const stockActual = medDoc.data().stockActual;
-                    if (stockActual < item.cantidad) {
-                        throw new Error(`STOCK_INSUFICIENTE_${item.nombre}`);
-                    }
-
-                    // Guardamos la referencia para actualizarla en el siguiente paso
-                    validacionesStock.push({ ref: medRef, nuevoStock: stockActual - item.cantidad });
-                }
-            }
-
-            // 2. Si hay stock suficiente, aplicamos los descuentos
-            for (const operacion of validacionesStock) {
-                transaction.update(operacion.ref, { 
-                    stockActual: operacion.nuevoStock,
-                    fechaActualizacion: admin.firestore.FieldValue.serverTimestamp()
-                });
-            }
-
-            // 3. Actualizamos la Cita
-            const updateCitaData = { 
-                estado: estado,
-                fechaActualizacion: admin.firestore.FieldValue.serverTimestamp()
-            };
-            if (recetaUrl) updateCitaData.recetaUrl = recetaUrl;
-            // Guardamos el registro de qué medicinas se dieron en esta cita
-            if (medicamentosEntregados) updateCitaData.medicamentosEntregados = medicamentosEntregados;
-
-            transaction.update(citaRef, updateCitaData);
-
-            // 4. Log de Auditoría
-            const auditoriaRef = db.collection('auditoria').doc(); // Genera un ID automático
-            transaction.set(auditoriaRef, {
-                accion: 'ATENCION_Y_ENTREGA_MEDICAMENTOS',
-                entidadId: id,
-                estadoNuevo: estado,
-                medicinasEntregadas: medicamentosEntregados || [],
-                usuarioId: req.user ? req.user.uid : 'Médico/Sistema',
-                fechaHora: admin.firestore.FieldValue.serverTimestamp(),
-                ip: req.ip
-            });
+        // Log de Auditoría
+        await db.collection('auditoria').add({
+            accion: 'ATENCION_MEDICA_COMPLETADA',
+            entidadId: id,
+            estadoAnterior: datosCitaAntigua.estado,
+            estadoNuevo: estado,
+            recetaAdjuntada: recetaUrl ? true : false,
+            usuarioId: req.user ? req.user.uid : 'Médico/Sistema', 
+            fechaHora: admin.firestore.FieldValue.serverTimestamp(),
+            ip: req.ip
         });
 
-        res.status(200).json({ message: 'Cita actualizada y stock descontado exitosamente.' });
-
+        res.status(200).json({ message: `Cita atendida. Receta guardada.` });
     } catch (error) {
-        console.error("Error en la transacción de atención:", error.message);
-        
-        // Manejo de errores amigable para el frontend
-        if (error.message.includes('STOCK_INSUFICIENTE')) {
-            const nombreMed = error.message.split('_')[2];
-            return res.status(400).json({ error: `No hay stock suficiente de ${nombreMed}` });
-        }
-        if (error.message === 'CITA_NO_ENCONTRADA') {
-            return res.status(404).json({ error: 'La cita no existe.' });
-        }
-
-        res.status(500).json({ error: 'Error interno al procesar la atención médica.' });
+        console.error("Error al actualizar:", error);
+        res.status(500).json({ error: 'Error al actualizar el estado de la cita' });
     }
 });
 
