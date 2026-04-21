@@ -1,5 +1,5 @@
 const express = require('express');
-const router = express.express.Router ? express.Router() : express.Router; // Fallback por si acaso
+const router = express.Router();
 const admin = require('../firebaseAdmin');
 const db = admin.firestore();
 
