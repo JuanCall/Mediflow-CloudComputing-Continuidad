@@ -38,10 +38,9 @@ const MisCitas = () => {
 
   useEffect(() => {
     if (currentUser) cargarCitas();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentUser]);
 
-  // NUEVO: Función de Pago
+  // Función de Pago
   const handlePagar = async (citaId) => {
     setProcesandoPagoId(citaId); // Iniciamos el spinner
 
