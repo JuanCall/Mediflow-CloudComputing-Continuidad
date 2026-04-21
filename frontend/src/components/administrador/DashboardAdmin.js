@@ -24,6 +24,12 @@ const DashboardAdmin = () => {
             <p>Gestionar plantilla médica</p>
           </div>
         </Link>
+
+        <Link to="/farmacia">
+          <button style={{ marginBottom: '20px', padding: '10px', background: '#007bff', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer' }}>
+            💊 Ir a Gestión de Farmacia
+          </button>
+        </Link>
       </div>
 
       <button onClick={logout} className="btn-primary" style={{width: '200px'}}>Cerrar Sesión</button>

@@ -15,6 +15,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import DashboardAdmin from './components/administrador/DashboardAdmin';
 import GestionEspecialidades from './components/administrador/GestionEspecialidades';
 import GestionMedicos from './components/administrador/GestionMedicos';
+import InventarioFarmacia from './components/InventarioFarmacia';
 
 import DashboardMedico from './components/medico/DashboardMedico';
 import PanelAtencion from './components/medico/PanelAtencion';
@@ -83,6 +84,14 @@ function App() {
                 <GestionMedicos />
               </ProtectedRoute>
             } 
+          />
+          <Route 
+            path="/farmacia" 
+            element={
+              <ProtectedRoute allowedRoles={['Admin']}>
+                <InventarioFarmacia />
+              </ProtectedRoute>
+            }
           />
           <Route 
             path="/dashboard-medico" 
