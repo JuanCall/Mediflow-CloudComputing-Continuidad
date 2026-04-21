@@ -88,10 +88,10 @@ router.get('/medico', async (req, res) => {
     }
 });
 
-// 4. ACTUALIZAR el estado de una cita (PUT)
+// 4. ACTUALIZAR el estado de una cita (y adjuntar receta) (PUT)
 router.put('/:id/estado', async (req, res) => {
     const { id } = req.params;
-    const { estado } = req.body; // Ej: 'Atendida', 'Cancelada'
+    const { estado, recetaUrl } = req.body; // <-- Ahora recibimos recetaUrl
 
     if (!estado) {
         return res.status(400).json({ error: 'Debes enviar un nuevo estado válido.' });
@@ -105,10 +105,18 @@ router.put('/:id/estado', async (req, res) => {
             return res.status(404).json({ error: 'Cita no encontrada.' });
         }
 
-        await citaRef.update({ 
+        // Preparamos los datos a actualizar
+        const updateData = { 
             estado: estado,
             fechaActualizacion: admin.firestore.FieldValue.serverTimestamp()
-        });
+        };
+
+        // Si el médico envió un archivo, lo agregamos a la base de datos
+        if (recetaUrl) {
+            updateData.recetaUrl = recetaUrl;
+        }
+
+        await citaRef.update(updateData);
 
         res.status(200).json({ message: `Cita actualizada a estado: ${estado}` });
     } catch (error) {
