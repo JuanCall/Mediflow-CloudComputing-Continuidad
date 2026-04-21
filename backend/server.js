@@ -49,6 +49,7 @@ const authRoutes = require('./routes/authRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const citasRoutes = require('./routes/citasRoutes');
 const medicamentosRoutes = require('./routes/medicamentosRoutes');
+const pagosRoutes = require('./routes/pagosRoutes');
 
 // Aplicamos el limitador estricto solo a la ruta de autenticación
 app.use('/api/auth', authLimiter, authRoutes);
@@ -57,6 +58,7 @@ app.use('/api/auth', authLimiter, authRoutes);
 app.use('/api/admin', apiLimiter, adminRoutes);
 app.use('/api/citas', apiLimiter, citasRoutes);
 app.use('/api/medicamentos', apiLimiter, medicamentosRoutes);
+app.use('/api/pagos', apiLimiter, pagosRoutes);
 
 // Ruta base de prueba
 app.get('/', (req, res) => {
