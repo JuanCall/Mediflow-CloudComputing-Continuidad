@@ -20,7 +20,7 @@ const PanelAtencion = () => {
     try {
       const token = await currentUser.getIdToken();
       // Usamos axios en lugar de fetch
-      const response = await axios.get('http://localhost:5000/api/citas/medico', {
+      const response = await axios.get('https://mediflow-cloudcomputing-continuidad-production.up.railway.app/api/citas/medico', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       setCitas(response.data);
@@ -64,7 +64,7 @@ const PanelAtencion = () => {
 
       // Le avisamos a nuestro backend (que ya lo habíamos preparado para recibir recetaUrl)
       const token = await currentUser.getIdToken();
-      await axios.put(`http://localhost:5000/api/citas/${id}/estado`, 
+      await axios.put(`https://mediflow-cloudcomputing-continuidad-production.up.railway.app/api/citas/${id}/estado`, 
         { estado: nuevoEstado, recetaUrl: recetaUrl },
         { headers: { 'Authorization': `Bearer ${token}` } }
       );

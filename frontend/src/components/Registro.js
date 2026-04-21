@@ -21,7 +21,7 @@ const Registro = () => {
     
     try {
       // 1. Enviamos los datos a nuestro backend para que cree al Paciente
-      const response = await fetch('http://localhost:5000/api/auth/registro', {
+      const response = await fetch('https://mediflow-cloudcomputing-continuidad-production.up.railway.app/api/auth/registro', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)

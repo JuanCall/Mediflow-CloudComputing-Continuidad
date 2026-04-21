@@ -31,8 +31,8 @@ const ReservarCita = () => {
         const headers = { Authorization: `Bearer ${token}` };
 
         const [resEsp, resMed] = await Promise.all([
-          axios.get('http://localhost:5000/api/admin/especialidades', { headers }),
-          axios.get('http://localhost:5000/api/admin/medicos', { headers })
+          axios.get('https://mediflow-cloudcomputing-continuidad-production.up.railway.app/api/admin/especialidades', { headers }),
+          axios.get('https://mediflow-cloudcomputing-continuidad-production.up.railway.app/api/admin/medicos', { headers })
         ]);
 
         setEspecialidades(resEsp.data);
@@ -76,7 +76,7 @@ const ReservarCita = () => {
         medicoNombre: medNombre
       };
 
-      await axios.post('http://localhost:5000/api/citas', payload, {
+      await axios.post('https://mediflow-cloudcomputing-continuidad-production.up.railway.app/api/citas', payload, {
         headers: { Authorization: `Bearer ${token}` }
       });
 

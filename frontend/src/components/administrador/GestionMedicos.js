@@ -26,7 +26,7 @@ const GestionMedicos = () => {
   const cargarMedicos = async () => {
     try {
       const token = await currentUser.getIdToken();
-      const response = await fetch('http://localhost:5000/api/admin/medicos', {
+      const response = await fetch('https://mediflow-cloudcomputing-continuidad-production.up.railway.app/api/admin/medicos', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (response.ok) {
@@ -41,7 +41,7 @@ const GestionMedicos = () => {
   const cargarEspecialidades = async () => {
     try {
       const token = await currentUser.getIdToken();
-      const response = await fetch('http://localhost:5000/api/admin/especialidades', {
+      const response = await fetch('https://mediflow-cloudcomputing-continuidad-production.up.railway.app/api/admin/especialidades', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (response.ok) {
@@ -76,7 +76,7 @@ const GestionMedicos = () => {
 
     try {
       const token = await currentUser.getIdToken();
-      const response = await fetch('http://localhost:5000/api/admin/medicos', {
+      const response = await fetch('https://mediflow-cloudcomputing-continuidad-production.up.railway.app/api/admin/medicos', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -104,7 +104,7 @@ const GestionMedicos = () => {
     
     try {
       const token = await currentUser.getIdToken();
-      const response = await fetch(`http://localhost:5000/api/admin/medicos/${uid}`, {
+      const response = await fetch(`https://mediflow-cloudcomputing-continuidad-production.up.railway.app/api/admin/medicos/${uid}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
       });

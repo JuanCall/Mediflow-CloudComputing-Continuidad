@@ -11,7 +11,7 @@ const TablaCitas = () => {
     const cargarCitas = async () => {
         try {
             const token = await currentUser.getIdToken();
-            const res = await axios.get('http://localhost:5000/api/citas/paciente', {
+            const res = await axios.get('https://mediflow-cloudcomputing-continuidad-production.up.railway.app/api/citas/paciente', {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setCitas(Array.isArray(res.data) ? res.data : []);
@@ -37,7 +37,7 @@ const TablaCitas = () => {
                 estado: 'Pendiente'
             };
 
-            await axios.post('http://localhost:5000/api/citas/paciente', datosCita, {
+            await axios.post('https://mediflow-cloudcomputing-continuidad-production.up.railway.app/api/citas/paciente', datosCita, {
                 headers: { Authorization: `Bearer ${token}` }
             });
 

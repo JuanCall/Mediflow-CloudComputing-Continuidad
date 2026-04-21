@@ -14,7 +14,7 @@ const MisCitas = () => {
       try {
         const token = await currentUser.getIdToken();
         // Este endpoint lo crearemos en el Issue #9
-        const response = await fetch('http://localhost:5000/api/citas/paciente', {
+        const response = await fetch('https://mediflow-cloudcomputing-continuidad-production.up.railway.app/api/citas/paciente', {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         

@@ -14,7 +14,7 @@ const GestionEspecialidades = () => {
   const cargarEspecialidades = async () => {
     try {
       const token = await currentUser.getIdToken();
-      const response = await fetch('http://localhost:5000/api/admin/especialidades', {
+      const response = await fetch('https://mediflow-cloudcomputing-continuidad-production.up.railway.app/api/admin/especialidades', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (response.ok) {
@@ -38,7 +38,7 @@ const GestionEspecialidades = () => {
     setMensaje('');
     try {
       const token = await currentUser.getIdToken();
-      const response = await fetch('http://localhost:5000/api/admin/especialidades', {
+      const response = await fetch('https://mediflow-cloudcomputing-continuidad-production.up.railway.app/api/admin/especialidades', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -66,7 +66,7 @@ const GestionEspecialidades = () => {
     
     try {
       const token = await currentUser.getIdToken();
-      const response = await fetch(`http://localhost:5000/api/admin/especialidades/${id}`, {
+      const response = await fetch(`https://mediflow-cloudcomputing-continuidad-production.up.railway.app/api/admin/especialidades/${id}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
       });
